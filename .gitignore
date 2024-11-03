@@ -1,1 +1,27 @@
+# install the following package
+# pip install transformers torch
+
+# main code
+
+
+from transformers import pipeline
+
+# Initialize the summarization pipeline
+summarizer = pipeline("summarization")
+
+# Example text to summarize
+text = """
+The quick brown fox jumps over the lazy dog. This sentence is often used as a pangram in English.
+It contains all the letters of the alphabet at least once, making it a useful tool for typing practice
+and font display. Pangrams are often used in the field of typography to showcase different typefaces
+and their characteristics. The quick brown fox is a famous phrase that has been referenced in various
+forms of media and literature.
+"""
+
+# Perform summarization
+summary = summarizer(text, max_length=50, min_length=25, do_sample=False)
+
+# Output the summary
+print("Summary:")
+print(summary[0]['summary_text'])
 
