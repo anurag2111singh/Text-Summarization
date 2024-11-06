@@ -1,27 +1,43 @@
-# install the following package
-# pip install transformers torch
+import math
+import re
+from collections import Counter
 
-# main code
+
+# Function to preprocess the text: Tokenize it into sentences and words
+def preprocess_text(text):
+    # Split the text into sentences using punctuation marks
+    sentences = re.split(r'[.!?]', text)
+
+    # Remove empty sentences from list after splitting
+    sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+
+    # Tokenize each sentence into words (consider only alphabets)
+    words_in_sentences = []
+    for sentence in sentences:
+        words = re.findall(r'\b\w+\b', sentence.lower())  # Use regex to extract words and make them lowercase
+        words_in_sentences.append(words)
+
+    return sentences, words_in_sentences
 
 
-from transformers import pipeline
+# Function to compute Term Frequency (TF) for a sentence
+def compute_tf(words_in_sentence):
+    tf = Counter(words_in_sentence)  # Count frequency of each word in the sentence
+    total_words = len(words_in_sentence)  # Total number of words in the sentence
+    for word in tf:
+        tf[word] = tf[word] / total_words  # Normalize by dividing by the total number of words
+    return tf
 
-# Initialize the summarization pipeline
-summarizer = pipeline("summarization")
 
-# Example text to summarize
-text = """
-The quick brown fox jumps over the lazy dog. This sentence is often used as a pangram in English.
-It contains all the letters of the alphabet at least once, making it a useful tool for typing practice
-and font display. Pangrams are often used in the field of typography to showcase different typefaces
-and their characteristics. The quick brown fox is a famous phrase that has been referenced in various
-forms of media and literature.
-"""
+# Function to compute Inverse Document Frequency (IDF) for the entire text
+def compute_idf(words_in_sentences):
+    idf = {}
+    total_sentences = len(words_in_sentences)
 
-# Perform summarization
-summary = summarizer(text, max_length=50, min_length=25, do_sample=False)
+    # Get the unique words across all sentences
+    all_words = set(word for sentence in words_in_sentences for word in set(sentence))
 
-# Output the summary
-print("Summary:")
-print(summary[0]['summary_text'])
+    for word in all_words:
+        containing_sentences = sum(1)
+
 
